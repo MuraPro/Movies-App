@@ -7,6 +7,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "date-fns": "^2.29.3",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -41,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "antd": "^5.0.6",
     "babel-eslint": "^10.1.0",
     "eslint": "^8.27.0",
     "eslint-config-airbnb": "^19.0.4",
@@ -53,11 +55,13 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.31.10",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "prop-types": "^15.8.1",
     "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
+    "lodash": "^4.17.21",
     "nanoid": "^4.0.0",
-    "prettier": "2.7.1"
+    "prettier": "2.7.1",
+    "prop-types": "^15.8.1",
+    "react-detect-offline": "^2.4.5"
   },
   "husky": {
     "hooks": {

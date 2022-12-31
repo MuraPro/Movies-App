@@ -1,0 +1,24 @@
+.CardList {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+}
+
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.Missing {
+  font-size: 20px;
+  font-family: 'Inter';
+  text-align: center;
+}
+
+@media (max-width: 991.9px) {
+  .CardList {
+    align-items: center;
+    flex-direction: column;
+  }
+}

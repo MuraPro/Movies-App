@@ -6,6 +6,4 @@ import './index.css';
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
 
-const el = <App />;
-
-root.render(el);
+root.render(<App />);
