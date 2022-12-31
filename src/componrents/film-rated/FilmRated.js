@@ -3,9 +3,9 @@ import './FilmRated.css';
 
 function FilmRated() {
   return (
-    <div className="FilmRated">
+    <button type="button" className="FilmRated">
       <span>Not found</span>
-    </div>
+    </button>
   );
 }
 
