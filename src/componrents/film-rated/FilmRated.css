@@ -7,5 +7,7 @@
   align-items: center;
   justify-content: center;
   background-color: yellow;
+}
+.FilmRated span {
   font-family: 'Inter';
 }

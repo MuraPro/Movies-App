@@ -75,6 +75,19 @@
     min-width: 20px;
   }
 }
+.FilmRated {
+  display: block;
+  width: 200px;
+  margin: 0 auto;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: yellow;
+}
+.FilmRated span {
+  font-family: 'Inter';
+}
 
 @media (max-width: 560px) {
   .wrapper {
