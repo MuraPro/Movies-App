@@ -3,7 +3,7 @@ import './FilmRated.css';
 
 function FilmRated() {
   return (
-    <button type="button" className="FilmRated">
+    <button type="button" className="FilmRated alert alert-primary">
       <span>Not found</span>
     </button>
   );
