@@ -6,7 +6,21 @@ import './FilmCard.css';
 import FilmGeners from '../film-geners/FilmGenres';
 import imageNotFound from '../../assets/images/image-not-found-scaled-1150x647.jpg';
 
-function FilmCard({ title, description, posterImage, date, id, average, genreIds }) {
+function FilmCard({
+  title,
+  description,
+  posterImage,
+  date,
+  id,
+  average,
+  genreIds,
+  rating,
+  rateMovie,
+}) {
+  const onRatingChange = (rate) => {
+    rateMovie(id, rate);
+  };
+
   const items = genreIds.map(({ name }) => {
     return <FilmGeners key={name} name={name} />;
   });
@@ -31,7 +45,7 @@ function FilmCard({ title, description, posterImage, date, id, average, genreIds
           <p>{text}</p>
         </div>
         <div className="CardItem4">
-          <Rate count={10} />
+          <Rate count={10} value={rating} onChange={onRatingChange} rateMovie={rateMovie} />
         </div>
       </div>
       <div className="Rating">

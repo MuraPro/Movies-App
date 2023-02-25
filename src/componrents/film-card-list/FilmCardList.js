@@ -5,7 +5,17 @@ import Error from '../Error';
 import FilmCard from '../film-card/FilmCard';
 import FilmsPagination from '../film-pagination';
 
-function FilmCardList({ movies, getMovies, query, totalDataItems, genres, hasError, loading }) {
+function FilmCardList({
+  movies,
+  getMovies,
+  query,
+  totalDataItems,
+  genres,
+  ratedMovies,
+  rateMovie,
+  hasError,
+  loading,
+}) {
   const errormesage = hasError ? <Error /> : null;
   const missing =
     !loading && !hasError && movies.length === 0 ? (
@@ -18,6 +28,8 @@ function FilmCardList({ movies, getMovies, query, totalDataItems, genres, hasErr
       query={query}
       totalDataItems={totalDataItems}
       genres={genres}
+      ratedMovies={ratedMovies}
+      rateMovie={rateMovie}
     />
   ) : null;
   return (
@@ -29,7 +41,7 @@ function FilmCardList({ movies, getMovies, query, totalDataItems, genres, hasErr
   );
 }
 
-function Content({ movies, getMovies, query, totalDataItems, genres }) {
+function Content({ movies, getMovies, query, totalDataItems, ratedMovies, rateMovie, genres }) {
   const items = movies.map(({ title, description, posterImage, date, id, genreIds, average }) => (
     <FilmCard
       title={title}
@@ -38,6 +50,8 @@ function Content({ movies, getMovies, query, totalDataItems, genres }) {
       date={date}
       key={id}
       id={id}
+      rating={ratedMovies[id]}
+      rateMovie={rateMovie}
       average={average}
       genreIds={genreIds.map((elem) => {
         return genres.find((item) => item.id === elem);
