@@ -19,3 +19,21 @@ Error: componentDidCatch - обработка не пойманых ошибок
 componentDidCatch() {
 this.setState({error: true})
 }
+
+this.movieService.getRatedMovies(page).then((data) => {
+this.setState({
+ratedMovies: data.results.map((movie) => ({
+title: movie.original_title,
+description: movie.overview,
+average: movie.vote_average.toFixed(1),
+posterImage: movie.poster_path
+? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
+: null,
+date: movie.release_date,
+id: movie.id,
+genreIds: movie.genre_ids,
+})),
+loading: false,
+totalDataItems: data.total_results,
+});
+});

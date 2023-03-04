@@ -1,44 +1,59 @@
-import React from 'react';
+import React, { Component } from 'react';
 import './FilmCardList.css';
 import PropTypes from 'prop-types';
+import { Spin } from 'antd';
 import Error from '../Error';
 import FilmCard from '../film-card/FilmCard';
 import FilmsPagination from '../film-pagination';
 
-function FilmCardList({
-  movies,
-  getMovies,
-  query,
-  totalDataItems,
-  genres,
-  ratedMovies,
-  rateMovie,
-  hasError,
-  loading,
-}) {
-  const errormesage = hasError ? <Error /> : null;
-  const missing =
-    !loading && !hasError && movies.length === 0 ? (
-      <h2 className="Missing">По вашему запросу ничего не было найдено. Попробуй еще раз!</h2>
+class FilmCardList extends Component {
+  componentDidMount() {
+    const { getMovies, getGenresTitle } = this.props;
+    getGenresTitle();
+    getMovies('', 1);
+  }
+
+  render() {
+    const {
+      movies,
+      getMovies,
+      query,
+      totalDataItems,
+      genres,
+      ratedMovies,
+      rateMovie,
+      hasError,
+      loading,
+    } = this.props;
+
+    const spinner = loading ? <Spin /> : null;
+    const errormesage = hasError ? <Error /> : null;
+    const hasData = !(loading || hasError);
+    const missing =
+      hasData && movies.length === 0 ? (
+        <h2 className="Missing">Nothing was found for your query. Try again!</h2>
+      ) : null;
+    const content = hasData ? (
+      <Content
+        movies={movies}
+        getMovies={getMovies}
+        query={query}
+        totalDataItems={totalDataItems}
+        genres={genres}
+        ratedMovies={ratedMovies}
+        rateMovie={rateMovie}
+      />
     ) : null;
-  const content = !hasError ? (
-    <Content
-      movies={movies}
-      getMovies={getMovies}
-      query={query}
-      totalDataItems={totalDataItems}
-      genres={genres}
-      ratedMovies={ratedMovies}
-      rateMovie={rateMovie}
-    />
-  ) : null;
-  return (
-    <>
-      {errormesage}
-      {missing}
-      {content}
-    </>
-  );
+
+    return (
+      <>
+        {errormesage}
+        {spinner}
+        {missing}
+        {content}
+      </>
+    );
+  }
 }
 
 function Content({ movies, getMovies, query, totalDataItems, ratedMovies, rateMovie, genres }) {
@@ -75,7 +90,6 @@ FilmCardList.propTypes = {
       id: PropTypes.number,
       posterImage: PropTypes.string,
       genreIds: PropTypes.arrayOf(PropTypes.number),
-      average: PropTypes.string,
     }),
   ).isRequired,
   totalDataItems: PropTypes.number.isRequired,

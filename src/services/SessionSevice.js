@@ -5,9 +5,9 @@ export default class SessionService {
   }
 
   async getGuestSessionId() {
-    const { BASE_URL, API_KEY } = this;
+    const { API_KEY } = this;
 
-    const url = `${BASE_URL}/authentication/guest_session/new?api_key=${API_KEY}`;
+    const url = `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${API_KEY}`;
 
     const res = await fetch(url);
 

@@ -1,3 +1,3 @@
-import FilmRated from './FilmRated';
+import RatedFilmList from './RatedFilmList';
 
-export default FilmRated;
+export default RatedFilmList;

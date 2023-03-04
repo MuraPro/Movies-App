@@ -19,26 +19,25 @@ export default class MovieService {
   async getMovies(query, page) {
     const { API_KEY } = this;
     const finalQuery = query;
-    let finalUrl = `/search/movie?api_key=${API_KEY}&query=${finalQuery}&page=${page}`;
+    let url = `/search/movie?api_key=${API_KEY}&query=${finalQuery}&page=${page}`;
 
     if (!query && query === '') {
-      finalUrl = `/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`;
+      url = `/movie/popular?api_key=${API_KEY}&page=${page}`;
     }
-    const films = await this.getResource(finalUrl);
+    const films = await this.getResource(url);
     const results = films.results.map((item) => this.transformFilmInfo(item));
     return results;
   }
 
   async getPages(query, page) {
     const { API_KEY } = this;
-    let finalQuery = query;
+    const finalQuery = query;
+    let url = `/search/movie?api_key=${API_KEY}&query=${finalQuery}&page=${page}`;
 
     if (!query && query === '') {
-      finalQuery = '';
+      url = `/movie/popular?api_key=${API_KEY}&page=${page}`;
     }
-    const films = await this.getResource(
-      `/search/movie?api_key=${API_KEY}&query=${finalQuery}&page=${page}`,
-    );
+    const films = await this.getResource(url);
     const pages = films.total_results;
     return pages;
   }
@@ -61,24 +60,31 @@ export default class MovieService {
     const { API_KEY } = this;
 
     const sessionId = localStorage.getItem('sessionId');
-
     const url = `/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}&page=${page}`;
 
-    const res = this.getResource(url);
+    const films = await this.getResource(url);
 
-    if (!res.ok) {
-      throw new Error('server error');
-    }
+    const results = films.results.map((item) => this.transformFilmInfo(item));
+    return results;
+  }
 
-    return res;
+  async getRatedPages(page) {
+    const { API_KEY } = this;
+    const sessionId = localStorage.getItem('sessionId');
+
+    const films = await this.getResource(
+      `/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}&page=${page}`,
+    );
+    const pages = films.total_results;
+    return pages;
   }
 
   async sendMovieRate(movieId, rate) {
-    const { BASE_URL, API_KEY } = this;
+    const { API_KEY } = this;
 
     const sessionId = localStorage.getItem('sessionId');
 
-    const url = `${BASE_URL}/movie/${movieId}/rating?api_key=${API_KEY}&guest_session_id=${sessionId}`;
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${API_KEY}&guest_session_id=${sessionId}`;
 
     const res = await fetch(url, {
       method: 'POST',

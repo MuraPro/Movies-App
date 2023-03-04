@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Rate } from 'antd';
 import PropTypes from 'prop-types';
 import 'antd/dist/reset.css';
@@ -21,13 +21,23 @@ function FilmCard({
     rateMovie(id, rate);
   };
 
+  const getAverageVoteColor = (voteAverage) => {
+    if (voteAverage >= 0 && voteAverage < 3) return '#E90000';
+    if (voteAverage >= 3 && voteAverage < 5) return '#E97E00';
+    if (voteAverage >= 5 && voteAverage < 7) return '#E9D100';
+    if (voteAverage >= 7) return '#66E900';
+    return '#000000';
+  };
+
   const items = genreIds.map(({ name }) => {
     return <FilmGeners key={name} name={name} />;
   });
+
   const img = posterImage || imageNotFound;
   const text =
     description ||
     'description not found...  description not found...  description not found... description not found...  ';
+
   return (
     <li className="Card" key={id}>
       <div className="CardBody">
@@ -49,7 +59,7 @@ function FilmCard({
         </div>
       </div>
       <div className="Rating">
-        <span>{average}</span>
+        <span style={{ border: `2px solid ${getAverageVoteColor(average)}` }}>{average}</span>
       </div>
     </li>
   );
@@ -61,11 +71,10 @@ FilmCard.propTypes = {
   posterImage: PropTypes.string,
   date: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
-  average: PropTypes.string,
+  average: PropTypes.string.isRequired,
 };
 
 FilmCard.defaultProps = {
-  average: 0,
   posterImage: null,
 };
 

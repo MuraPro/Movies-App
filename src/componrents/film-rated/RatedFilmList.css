@@ -5,15 +5,22 @@
   padding-top: 20px;
 }
 
-.pagination {
+.Pagination {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
+.CardList {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+}
+
 @media (max-width: 1010px) {
-  .cardList {
+  .CardList {
     align-items: center;
     flex-direction: column;
+    color: #e90000 #e97e00 #e9d100 #66e900 #000000;
   }
 } ;
