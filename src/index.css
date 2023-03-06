@@ -32,6 +32,7 @@ body {
   background: #e5e5e5;
   padding: 0 calc(20px - (100vw - 100%)) 0 0;
 }
+
 input,
 button,
 textarea {
@@ -82,4 +83,10 @@ h6 {
     url('./fonts/Inter-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 0px 0px 0px 20px;
+  }
 }
