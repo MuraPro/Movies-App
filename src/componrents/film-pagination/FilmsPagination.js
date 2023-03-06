@@ -5,23 +5,19 @@ import PropTypes from 'prop-types';
 import './FilmsPagination.css';
 
 class FilmsPagination extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      page: 1,
-    };
-  }
+  setPage = (page) => {
+    const { onPageChange } = this.props;
+    onPageChange(page);
+  };
 
   onChangeHandle = (page) => {
-    const { getMovies, query } = this.props;
-    this.setState({ page });
-    getMovies(query, page);
+    const { getDataMovies, query } = this.props;
+    getDataMovies(query, page);
+    this.setPage(page);
   };
 
   render() {
-    const { totalDataItems } = this.props;
-    const { page } = this.state;
+    const { totalDataItems, page } = this.props;
     return (
       <div className="paginationArea">
         <Pagination
@@ -31,7 +27,7 @@ class FilmsPagination extends Component {
           onChange={this.onChangeHandle}
           hideOnSinglePage
           current={page}
-          defaultCurrent={1}
+          defaultCurrent={page}
         />
       </div>
     );

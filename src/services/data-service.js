@@ -16,36 +16,20 @@ export default class MovieService {
     return body;
   }
 
-  async getMovies(query, page) {
+  async getDataMovies(query, page) {
     const { API_KEY } = this;
     const finalQuery = query;
+
     let url = `/search/movie?api_key=${API_KEY}&query=${finalQuery}&page=${page}`;
 
     if (!query && query === '') {
       url = `/movie/popular?api_key=${API_KEY}&page=${page}`;
     }
     const films = await this.getResource(url);
+
+    const totalPages = films.total_results;
     const results = films.results.map((item) => this.transformFilmInfo(item));
-    return results;
-  }
-
-  async getPages(query, page) {
-    const { API_KEY } = this;
-    const finalQuery = query;
-    let url = `/search/movie?api_key=${API_KEY}&query=${finalQuery}&page=${page}`;
-
-    if (!query && query === '') {
-      url = `/movie/popular?api_key=${API_KEY}&page=${page}`;
-    }
-    const films = await this.getResource(url);
-    const pages = films.total_results;
-    return pages;
-  }
-
-  async getMovie(id) {
-    const { API_KEY } = this;
-    const movie = await this.getResource(`movie/${id}?api_key=${API_KEY}&language=en-US`);
-    return this.transformFilmInfo(movie);
+    return { results, totalPages };
   }
 
   async getGenres() {
@@ -66,6 +50,17 @@ export default class MovieService {
 
     const results = films.results.map((item) => this.transformFilmInfo(item));
     return results;
+  }
+
+  async getRatingData(page) {
+    const { API_KEY } = this;
+
+    const sessionId = localStorage.getItem('sessionId');
+
+    const url = `/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}&page=${page}`;
+
+    const res = await this.getResource(url);
+    return res;
   }
 
   async getRatedPages(page) {

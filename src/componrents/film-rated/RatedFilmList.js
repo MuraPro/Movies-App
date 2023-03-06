@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Pagination, Spin } from 'antd';
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import FilmCard from '../film-card/FilmCard';
-import Error from '../Error';
 import MovieService from '../../services';
 import './RatedFilmList.css';
 
 class RatedFilmList extends Component {
   movieService = new MovieService();
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       ratedMovies: [],
       loading: true,
       page: 1,
       totalDataItems: 0,
-      hasError: false,
     };
   }
 
@@ -49,7 +48,6 @@ class RatedFilmList extends Component {
 
   onError = () => {
     this.setState({
-      hasError: true,
       loading: false,
     });
   };
@@ -60,38 +58,43 @@ class RatedFilmList extends Component {
   };
 
   render() {
-    const { ratedMovies, loading, page, totalDataItems, hasError } = this.state;
+    const { loading, page, totalDataItems, ratedMovies } = this.state;
     const { rateMovie, ratedMoviesId, genres } = this.props;
 
-    const error = hasError ? <Error /> : null;
     const spinner = loading ? <Spin /> : null;
-    const hasData = !(loading || hasError);
-    const content = hasData ? (
-      <ContentView
-        ratedMovies={ratedMovies}
-        rateMovie={rateMovie}
-        ratedMoviesId={ratedMoviesId}
-        genres={genres}
-      />
-    ) : null;
-    const pagination = hasData ? (
-      <div className="Pagination">
-        <Pagination
-          current={page}
-          pageSize="20"
-          total={totalDataItems > 10000 ? 10000 : totalDataItems}
-          onChange={this.onPageChange}
-        />
-      </div>
-    ) : null;
+    const content =
+      !loading && ratedMovies.length !== 0 ? (
+        <div>
+          <ContentView
+            rateMovie={rateMovie}
+            ratedMoviesId={ratedMoviesId}
+            genres={genres}
+            ratedMovies={ratedMovies}
+          />
+          <div className="Pagination">
+            <Pagination
+              current={page}
+              pageSize="20"
+              total={totalDataItems > 10000 ? 10000 : totalDataItems}
+              onChange={this.onPageChange}
+            />
+          </div>
+        </div>
+      ) : null;
+
+    const missing =
+      !loading && ratedMovies.length === 0 ? (
+        <h2 className="Missing">
+          Страница для отображения оцененных фильмов. Вы еще не оценили ни одного фильма.
+        </h2>
+      ) : null;
 
     return (
-      <>
-        {error}
+      <ErrorBoundary>
         {spinner}
+        {missing}
         {content}
-        {pagination}
-      </>
+      </ErrorBoundary>
     );
   }
 }
@@ -120,6 +123,16 @@ function ContentView({ rateMovie, ratedMoviesId, genres, ratedMovies }) {
 }
 
 RatedFilmList.propTypes = {
+  ratedMovies: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string,
+      description: PropTypes.string,
+      date: PropTypes.string,
+      id: PropTypes.number,
+      posterImage: PropTypes.string,
+      genreIds: PropTypes.arrayOf(PropTypes.number),
+    }),
+  ).isRequired,
   rateMovie: PropTypes.func.isRequired,
   ratedMoviesId: PropTypes.objectOf(PropTypes.number).isRequired,
 };

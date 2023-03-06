@@ -29,11 +29,11 @@ export default class App extends Component {
       genres: null,
       ratedMovies: {},
       hasError: false,
+      page: 1,
     };
 
-    this.getMovies = this.getMovies.bind(this);
+    this.getDataMovies = this.getDataMovies.bind(this);
     this.getGenresTitle = this.getGenresTitle.bind(this);
-    this.getRatedMovies = this.getRatedMovies.bind(this);
   }
 
   componentDidMount() {
@@ -43,21 +43,21 @@ export default class App extends Component {
         .then((data) => {
           localStorage.setItem('sessionId', data.guest_session_id);
         })
-        .then(() => this.getRatedMovies());
+        .then(() => this.getRatingData(1));
       return;
     }
-    this.getRatedMovies(1);
+    this.getRatingData(1);
   }
 
-  getRatedMovies = () => {
+  getRatingData = () => {
     this.movieService
-      .getRatedMovies(1)
+      .getRatingData(1)
       .then((res) => res.total_pages)
       .then((pages) => {
         const allMovies = [];
 
         for (let i = 1; i <= pages; i += 1) {
-          allMovies.push(this.movieService.getRatedMovies(i));
+          allMovies.push(this.movieService.getRatingData(i));
         }
 
         Promise.all(allMovies).then((res) => {
@@ -74,26 +74,19 @@ export default class App extends Component {
       });
   };
 
-  onMoviesLoaded = (movies) => {
+  onMoviesLoaded = ({ results, totalPages }) => {
     this.setState({
-      movies,
+      movies: results,
+      totalDataItems: totalPages,
       loading: false,
     });
   };
 
-  getMovies = (query, page) => {
+  getDataMovies = (query, page) => {
     this.setState({ loading: true });
     this.movieService
-      .getMovies(query, page)
-      .then((movies) => this.onMoviesLoaded(movies))
-      .catch(this.onError);
-    this.movieService
-      .getPages(query, page)
-      .then((totalDataItems) => {
-        this.setState({
-          totalDataItems,
-        });
-      })
+      .getDataMovies(query, page)
+      .then((data) => this.onMoviesLoaded(data))
       .catch(this.onError);
   };
 
@@ -127,16 +120,22 @@ export default class App extends Component {
   };
 
   render() {
-    const { movies, query, totalDataItems, loading, genres, ratedMovies, hasError } = this.state;
+    const { movies, query, totalDataItems, loading, genres, ratedMovies, hasError, page } =
+      this.state;
+
     const items = [
       {
         label: 'Search',
         key: '1',
         children: (
           <>
-            <SearchFilmInput movies={movies} setQuery={this.setQuery} getMovies={this.getMovies} />
+            <SearchFilmInput
+              movies={movies}
+              setQuery={this.setQuery}
+              getDataMovies={this.getDataMovies}
+            />
             <FilmCardList
-              getMovies={this.getMovies}
+              getDataMovies={this.getDataMovies}
               getGenresTitle={this.getGenresTitle}
               movies={movies}
               query={query}
@@ -145,6 +144,8 @@ export default class App extends Component {
               genres={genres}
               ratedMovies={ratedMovies}
               rateMovie={this.rateMovie}
+              page={page}
+              onPageChange={this.onPageChange}
               hasError={hasError}
             />
           </>
@@ -160,10 +161,10 @@ export default class App extends Component {
     ];
 
     return (
-      <div className="app  ">
+      <div className="app">
         <Online>
           <div className="wrapper container">
-            <Tabs defaultActiveKey="1" centered items={items} destroyInactiveTabPane />
+            <Tabs defaultActiveKey="1" centered items={items} destroyInactiveTabPane size="large" />
           </div>
         </Online>
         <Offline>

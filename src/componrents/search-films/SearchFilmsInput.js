@@ -7,9 +7,9 @@ import { debounce } from 'lodash';
 
 class SearchFilmInput extends Component {
   debouncedFetching = debounce((query, page) => {
-    const { getMovies, setQuery } = this.props;
+    const { getDataMovies, setQuery } = this.props;
     setQuery(query);
-    getMovies(query, page);
+    getDataMovies(query, page);
   }, 500);
 
   constructor() {

@@ -84,6 +84,10 @@ h1 {
   grid-template-rows: 175px 87px 40px;
   column-gap: 24px;
 }
+.CardItem1 a {
+  pointer-events: none;
+  cursor: default;
+}
 .CardItem1 {
   grid-row: 1 / 4;
   grid-column: 1 / 2;

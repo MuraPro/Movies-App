@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Rate } from 'antd';
 import PropTypes from 'prop-types';
 import 'antd/dist/reset.css';

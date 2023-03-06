@@ -12,13 +12,11 @@
 .ant-spin-dot {
   margin-top: 40px;
 }
+
 :where(.css-dev-only-do-not-override-1hyej8k).ant-spin .ant-spin-dot {
   font-size: 25px;
 }
-.ant-tabs-tab.ant-tabs-tab-active > .ant-tabs-ink-bar {
-  left: 78px;
-  width: 40px;
-}
+
 .ant-tabs-tab-btn {
   font-family: 'Inter';
   font-size: 14px;

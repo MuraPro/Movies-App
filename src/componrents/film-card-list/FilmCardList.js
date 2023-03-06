@@ -2,61 +2,73 @@ import React, { Component } from 'react';
 import './FilmCardList.css';
 import PropTypes from 'prop-types';
 import { Spin } from 'antd';
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import Error from '../Error';
 import FilmCard from '../film-card/FilmCard';
 import FilmsPagination from '../film-pagination';
 
 class FilmCardList extends Component {
   componentDidMount() {
-    const { getMovies, getGenresTitle } = this.props;
+    const { getDataMovies, getGenresTitle, page } = this.props;
     getGenresTitle();
-    getMovies('', 1);
+    getDataMovies('', page);
   }
 
   render() {
     const {
       movies,
-      getMovies,
+      getDataMovies,
       query,
       totalDataItems,
       genres,
       ratedMovies,
       rateMovie,
-      hasError,
+      page,
       loading,
+      onPageChange,
     } = this.props;
 
     const spinner = loading ? <Spin /> : null;
-    const errormesage = hasError ? <Error /> : null;
-    const hasData = !(loading || hasError);
     const missing =
-      hasData && movies.length === 0 ? (
-        <h2 className="Missing">Nothing was found for your query. Try again!</h2>
+      !loading && movies.length === 0 ? (
+        <h2 className="Missing">По вашему запросу данные отсутствуют. Попробуйте еще раз!</h2>
       ) : null;
-    const content = hasData ? (
-      <Content
-        movies={movies}
-        getMovies={getMovies}
-        query={query}
-        totalDataItems={totalDataItems}
-        genres={genres}
-        ratedMovies={ratedMovies}
-        rateMovie={rateMovie}
-      />
-    ) : null;
+    const content =
+      !loading && movies.length !== 0 ? (
+        <Content
+          movies={movies}
+          getDataMovies={getDataMovies}
+          query={query}
+          totalDataItems={totalDataItems}
+          genres={genres}
+          ratedMovies={ratedMovies}
+          rateMovie={rateMovie}
+          page={page}
+          onPageChange={onPageChange}
+        />
+      ) : null;
 
     return (
-      <>
-        {errormesage}
+      <ErrorBoundary>
         {spinner}
         {missing}
         {content}
-      </>
+      </ErrorBoundary>
     );
   }
 }
 
-function Content({ movies, getMovies, query, totalDataItems, ratedMovies, rateMovie, genres }) {
+function Content({
+  movies,
+  getDataMovies,
+  query,
+  totalDataItems,
+  ratedMovies,
+  rateMovie,
+  genres,
+  page,
+  onPageChange,
+}) {
   const items = movies.map(({ title, description, posterImage, date, id, genreIds, average }) => (
     <FilmCard
       title={title}
@@ -76,7 +88,13 @@ function Content({ movies, getMovies, query, totalDataItems, ratedMovies, rateMo
   return (
     <>
       <ul className="CardList">{items}</ul>
-      <FilmsPagination totalDataItems={totalDataItems} getMovies={getMovies} query={query} />
+      <FilmsPagination
+        totalDataItems={totalDataItems}
+        getDataMovies={getDataMovies}
+        query={query}
+        page={page}
+        onPageChange={onPageChange}
+      />
     </>
   );
 }
@@ -94,8 +112,7 @@ FilmCardList.propTypes = {
   ).isRequired,
   totalDataItems: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired,
-  hasError: PropTypes.bool.isRequired,
-  getMovies: PropTypes.func.isRequired,
+  getDataMovies: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };
 
