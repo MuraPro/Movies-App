@@ -1,10 +1,11 @@
 import React from 'react';
 import { Rate } from 'antd';
 import PropTypes from 'prop-types';
-import 'antd/dist/reset.css';
-import './FilmCard.css';
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
 import FilmGeners from '../film-geners/FilmGenres';
 import imageNotFound from '../../assets/images/image-not-found-scaled-1150x647.jpg';
+import './FilmCard.css';
+import 'antd/dist/reset.css';
 
 function FilmCard({
   title,
@@ -39,29 +40,31 @@ function FilmCard({
     'description not found...  description not found...  description not found... description not found...  ';
 
   return (
-    <li className="Card" key={id}>
-      <div className="CardBody">
-        <div className="CardItem1">
-          <a href="!#">
-            <img src={img} alt="Img" />
-          </a>
+    <ErrorBoundary>
+      <li className="Card" key={id}>
+        <div className="CardBody">
+          <div className="CardItem1">
+            <a href="!#">
+              <img src={img} alt="Img" />
+            </a>
+          </div>
+          <div className="CardItem2">
+            <h1>{title}</h1>
+            <span>{date}</span>
+            <ul className="CardTitleList">{items}</ul>
+          </div>
+          <div className="CardItem3">
+            <p>{text}</p>
+          </div>
+          <div className="CardItem4">
+            <Rate count={10} value={rating} onChange={onRatingChange} rateMovie={rateMovie} />
+          </div>
         </div>
-        <div className="CardItem2">
-          <h1>{title}</h1>
-          <span>{date}</span>
-          <ul className="CardTitleList">{items}</ul>
+        <div className="Rating">
+          <span style={{ border: `2px solid ${getAverageVoteColor(average)}` }}>{average}</span>
         </div>
-        <div className="CardItem3">
-          <p>{text}</p>
-        </div>
-        <div className="CardItem4">
-          <Rate count={10} value={rating} onChange={onRatingChange} rateMovie={rateMovie} />
-        </div>
-      </div>
-      <div className="Rating">
-        <span style={{ border: `2px solid ${getAverageVoteColor(average)}` }}>{average}</span>
-      </div>
-    </li>
+      </li>
+    </ErrorBoundary>
   );
 }
 

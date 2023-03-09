@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import 'antd/dist/reset.css';
-import './SearchFilmsInput.css';
 import { Input } from 'antd';
 import { debounce } from 'lodash';
+import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
+import Error from '../Error';
+import 'antd/dist/reset.css';
+import './SearchFilmsInput.css';
 
 class SearchFilmInput extends Component {
   debouncedFetching = debounce((query, page) => {
@@ -26,8 +28,11 @@ class SearchFilmInput extends Component {
 
   render() {
     const { inputValue } = this.state;
+    const { hasError } = this.props;
 
-    return (
+    const content = hasError ? (
+      <Error />
+    ) : (
       <Input
         placeholder="Type to search..."
         value={inputValue}
@@ -36,11 +41,13 @@ class SearchFilmInput extends Component {
         onChange={this.onChangeHandle}
       />
     );
+
+    return <ErrorBoundary>{content}</ErrorBoundary>;
   }
 }
 
 SearchFilmInput.propTypes = {
-  getMovies: PropTypes.func.isRequired,
+  getDataMovies: PropTypes.func.isRequired,
   setQuery: PropTypes.func.isRequired,
 };
 

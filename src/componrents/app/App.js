@@ -4,11 +4,12 @@ import { Tabs } from 'antd';
 import { Offline, Online } from 'react-detect-offline';
 import { debounce } from 'lodash';
 import Error from '../Error';
-import SearchFilmInput from '../search-films/SearchFilmsInput';
+import { GenresProvider } from '../genres-context';
+import SearchFilmInput from '../film-search/SearchFilmsInput';
 import FilmCardList from '../film-card-list/FilmCardList';
-import RatedFilmList from '../film-rated';
-import SessionService from '../../services/SessionSevice';
-import MovieService from '../../services';
+import RatedFilmList from '../film-card-rated-list/RatedFilmList';
+import SessionService from '../../services/session-sevice';
+import MovieService from '../../services/data-service';
 
 export default class App extends Component {
   debouncedFetching = debounce((id, rating) => {
@@ -31,9 +32,6 @@ export default class App extends Component {
       hasError: false,
       page: 1,
     };
-
-    this.getDataMovies = this.getDataMovies.bind(this);
-    this.getGenresTitle = this.getGenresTitle.bind(this);
   }
 
   componentDidMount() {
@@ -43,21 +41,22 @@ export default class App extends Component {
         .then((data) => {
           localStorage.setItem('sessionId', data.guest_session_id);
         })
-        .then(() => this.getRatingData(1));
+        .then(() => this.getRatedData(1))
+        .catch(this.onError);
       return;
     }
-    this.getRatingData(1);
+    this.getRatedData(1);
   }
 
-  getRatingData = () => {
+  getRatedData = () => {
     this.movieService
-      .getRatingData(1)
+      .getRatedData(1)
       .then((res) => res.total_pages)
       .then((pages) => {
         const allMovies = [];
 
         for (let i = 1; i <= pages; i += 1) {
-          allMovies.push(this.movieService.getRatingData(i));
+          allMovies.push(this.movieService.getRatedData(i));
         }
 
         Promise.all(allMovies).then((res) => {
@@ -71,7 +70,8 @@ export default class App extends Component {
               ),
           });
         });
-      });
+      })
+      .catch(this.onError);
   };
 
   onMoviesLoaded = ({ results, totalPages }) => {
@@ -119,6 +119,13 @@ export default class App extends Component {
     }));
   };
 
+  onPageChange = (page) => {
+    this.setState({
+      page,
+      loading: true,
+    });
+  };
+
   render() {
     const { movies, query, totalDataItems, loading, genres, ratedMovies, hasError, page } =
       this.state;
@@ -133,6 +140,7 @@ export default class App extends Component {
               movies={movies}
               setQuery={this.setQuery}
               getDataMovies={this.getDataMovies}
+              hasError={hasError}
             />
             <FilmCardList
               getDataMovies={this.getDataMovies}
@@ -141,7 +149,6 @@ export default class App extends Component {
               query={query}
               totalDataItems={totalDataItems}
               loading={loading}
-              genres={genres}
               ratedMovies={ratedMovies}
               rateMovie={this.rateMovie}
               page={page}
@@ -155,7 +162,11 @@ export default class App extends Component {
         label: 'Rated',
         key: '2',
         children: (
-          <RatedFilmList ratedMoviesId={ratedMovies} rateMovie={this.rateMovie} genres={genres} />
+          <RatedFilmList
+            ratedMoviesId={ratedMovies}
+            rateMovie={this.rateMovie}
+            hasError={hasError}
+          />
         ),
       },
     ];
@@ -163,9 +174,17 @@ export default class App extends Component {
     return (
       <div className="app">
         <Online>
-          <div className="wrapper container">
-            <Tabs defaultActiveKey="1" centered items={items} destroyInactiveTabPane size="large" />
-          </div>
+          <GenresProvider value={genres}>
+            <div className="wrapper container">
+              <Tabs
+                defaultActiveKey="1"
+                centered
+                items={items}
+                destroyInactiveTabPane
+                size="large"
+              />
+            </div>
+          </GenresProvider>
         </Online>
         <Offline>
           <div className="offline-message-area container">

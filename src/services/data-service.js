@@ -52,7 +52,7 @@ export default class MovieService {
     return results;
   }
 
-  async getRatingData(page) {
+  async getRatedData(page) {
     const { API_KEY } = this;
 
     const sessionId = localStorage.getItem('sessionId');

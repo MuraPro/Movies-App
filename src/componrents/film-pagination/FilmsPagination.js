@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Pagination } from 'antd';
 import PropTypes from 'prop-types';
-
 import './FilmsPagination.css';
 
 class FilmsPagination extends Component {
@@ -36,7 +35,7 @@ class FilmsPagination extends Component {
 
 FilmsPagination.propTypes = {
   totalDataItems: PropTypes.number,
-  getMovies: PropTypes.func.isRequired,
+  getDataMovies: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };
 

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Pagination, Spin } from 'antd';
+import { Spin } from 'antd';
 import ErrorBoundary from 'antd/es/alert/ErrorBoundary';
-import FilmCard from '../film-card/FilmCard';
-import MovieService from '../../services';
+import { MoviesRatedRender } from '../film-card-renders';
+import Error from '../Error';
+import MovieService from '../../services/data-service';
 import './RatedFilmList.css';
 
 class RatedFilmList extends Component {
@@ -11,6 +12,7 @@ class RatedFilmList extends Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       ratedMovies: [],
       loading: true,
@@ -59,31 +61,25 @@ class RatedFilmList extends Component {
 
   render() {
     const { loading, page, totalDataItems, ratedMovies } = this.state;
-    const { rateMovie, ratedMoviesId, genres } = this.props;
+    const { rateMovie, ratedMoviesId, hasError } = this.props;
 
+    const hasData = !(loading || hasError);
+    const errorMessage = hasError ? <Error /> : null;
     const spinner = loading ? <Spin /> : null;
     const content =
-      !loading && ratedMovies.length !== 0 ? (
-        <div>
-          <ContentView
-            rateMovie={rateMovie}
-            ratedMoviesId={ratedMoviesId}
-            genres={genres}
-            ratedMovies={ratedMovies}
-          />
-          <div className="Pagination">
-            <Pagination
-              current={page}
-              pageSize="20"
-              total={totalDataItems > 10000 ? 10000 : totalDataItems}
-              onChange={this.onPageChange}
-            />
-          </div>
-        </div>
+      hasData && ratedMovies.length !== 0 ? (
+        <MoviesRatedRender
+          rateMovie={rateMovie}
+          ratedMoviesId={ratedMoviesId}
+          ratedMovies={ratedMovies}
+          onPageChange={this.onPageChange}
+          page={page}
+          totalDataItems={totalDataItems}
+        />
       ) : null;
 
     const missing =
-      !loading && ratedMovies.length === 0 ? (
+      hasData && ratedMovies.length === 0 ? (
         <h2 className="Missing">
           Страница для отображения оцененных фильмов. Вы еще не оценили ни одного фильма.
         </h2>
@@ -92,6 +88,7 @@ class RatedFilmList extends Component {
     return (
       <ErrorBoundary>
         {spinner}
+        {errorMessage}
         {missing}
         {content}
       </ErrorBoundary>
@@ -99,40 +96,7 @@ class RatedFilmList extends Component {
   }
 }
 
-function ContentView({ rateMovie, ratedMoviesId, genres, ratedMovies }) {
-  const items = ratedMovies.map(
-    ({ title, description, average, posterImage, date, id, genreIds }) => (
-      <FilmCard
-        title={title}
-        description={description}
-        rating={ratedMoviesId[id]}
-        posterImage={posterImage}
-        average={average}
-        date={date}
-        key={id}
-        rateMovie={rateMovie}
-        id={id}
-        genreIds={genreIds.map((elem) => {
-          return genres.find((item) => item.id === elem);
-        })}
-      />
-    ),
-  );
-
-  return <ul className="CardList">{items}</ul>;
-}
-
 RatedFilmList.propTypes = {
-  ratedMovies: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      description: PropTypes.string,
-      date: PropTypes.string,
-      id: PropTypes.number,
-      posterImage: PropTypes.string,
-      genreIds: PropTypes.arrayOf(PropTypes.number),
-    }),
-  ).isRequired,
   rateMovie: PropTypes.func.isRequired,
   ratedMoviesId: PropTypes.objectOf(PropTypes.number).isRequired,
 };

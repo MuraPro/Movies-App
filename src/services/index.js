@@ -1,4 +1,7 @@
 import MovieService from './data-service';
-import SessionService from './SessionSevice';
+import SessionService from './session-sevice';
 
-export default MovieService;
+export default {
+  MovieService,
+  SessionService,
+};
