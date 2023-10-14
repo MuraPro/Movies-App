@@ -20,11 +20,11 @@ function MoviesRender({
       {(genres) => {
         return (
           <FilmCard
+            key={id}
             title={title}
             description={description}
             posterImage={posterImage}
             date={date}
-            key={id}
             id={id}
             rating={ratedMovies[id]}
             rateMovie={rateMovie}

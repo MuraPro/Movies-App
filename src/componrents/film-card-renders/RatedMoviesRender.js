@@ -19,13 +19,13 @@ function MoviesRatedRender({
         {(genres) => {
           return (
             <FilmCard
+              key={id}
               title={title}
               description={description}
               rating={ratedMoviesId[id]}
               posterImage={posterImage}
               average={average}
               date={date}
-              key={id}
               rateMovie={rateMovie}
               id={id}
               genreIds={genreIds.map((elem) => {

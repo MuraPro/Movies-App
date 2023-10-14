@@ -69,6 +69,7 @@ class RatedFilmList extends Component {
     const content =
       hasData && ratedMovies.length !== 0 ? (
         <MoviesRatedRender
+          key={rateMovie.id}
           rateMovie={rateMovie}
           ratedMoviesId={ratedMoviesId}
           ratedMovies={ratedMovies}

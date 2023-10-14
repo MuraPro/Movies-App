@@ -37,6 +37,7 @@ class FilmCardList extends Component {
     const content =
       hasData && movies.length !== 0 ? (
         <MoviesRender
+          key={movies.id}
           movies={movies}
           getDataMovies={getDataMovies}
           query={query}
