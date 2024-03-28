@@ -43,7 +43,6 @@ export default class App extends Component {
         })
         .then(() => this.getRatedData(1))
         .catch(this.onError);
-      return;
     }
     this.getRatedData(1);
   }

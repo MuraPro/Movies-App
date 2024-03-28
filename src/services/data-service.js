@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export default class MovieService {
   constructor() {
-    this.API_KEY = '282e31062bfb9d0dbaeaf8fdb2231950';
+    this.API_KEY = '8686551b095b566101694eafefebd764';
     this.BASE_URL = 'https://api.themoviedb.org/3';
   }
 
@@ -49,6 +49,7 @@ export default class MovieService {
     const films = await this.getResource(url);
 
     const results = films.results.map((item) => this.transformFilmInfo(item));
+
     return results;
   }
 
@@ -71,6 +72,7 @@ export default class MovieService {
       `/guest_session/${sessionId}/rated/movies?api_key=${API_KEY}&page=${page}`,
     );
     const pages = films.total_results;
+
     return pages;
   }
 
