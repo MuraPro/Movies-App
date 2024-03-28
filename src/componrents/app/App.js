@@ -44,13 +44,16 @@ export default class App extends Component {
         .then(() => this.getRatedData(1))
         .catch(this.onError);
     }
-    this.getRatedData(1);
+    this.getRatedData();
   }
 
   getRatedData = () => {
     this.movieService
       .getRatedData(1)
-      .then((res) => res.total_pages)
+      .then((res) => {
+        console.log(res);
+        return res.total_pages;
+      })
       .then((pages) => {
         const allMovies = [];
 
@@ -131,7 +134,7 @@ export default class App extends Component {
 
     const items = [
       {
-        label: 'Search',
+        label: 'Movies List',
         key: '1',
         children: (
           <>
@@ -158,7 +161,7 @@ export default class App extends Component {
         ),
       },
       {
-        label: 'Rated',
+        label: 'Rated Movies',
         key: '2',
         children: (
           <RatedFilmList

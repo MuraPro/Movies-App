@@ -15,28 +15,31 @@ function MoviesRender({
   page,
   onPageChange,
 }) {
-  const items = movies.map(({ title, description, posterImage, date, id, genreIds, average }) => (
-    <GenresConsumer>
-      {(genres) => {
-        return (
-          <FilmCard
-            key={id}
-            title={title}
-            description={description}
-            posterImage={posterImage}
-            date={date}
-            id={id}
-            rating={ratedMovies[id]}
-            rateMovie={rateMovie}
-            average={average}
-            genreIds={genreIds.map((elem) => {
-              return genres.find((item) => item.id === elem);
-            })}
-          />
-        );
-      }}
-    </GenresConsumer>
-  ));
+  const items = movies.map(({ title, description, posterImage, date, id, genreIds, average }) => {
+    return (
+      <GenresConsumer key={id}>
+        {(genres) => {
+          return (
+            <FilmCard
+              rateMovie={rateMovie}
+              key={id}
+              id={id}
+              date={date}
+              title={title}
+              description={description}
+              rating={ratedMovies[id]}
+              posterImage={posterImage}
+              average={average}
+              genreIds={genreIds.map((elem) => {
+                return genres.find((item) => item.id === elem);
+              })}
+            />
+          );
+        }}
+      </GenresConsumer>
+    );
+  });
+
   return (
     <ErrorBoundary>
       <ul className="CardList">{items}</ul>
@@ -65,6 +68,10 @@ MoviesRender.propTypes = {
   totalDataItems: PropTypes.number.isRequired,
   getDataMovies: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
+  ratedMovies: PropTypes.objectOf(PropTypes.number).isRequired,
+  rateMovie: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  onPageChange: PropTypes.func.isRequired,
 };
 
 export default MoviesRender;

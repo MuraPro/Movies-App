@@ -15,7 +15,7 @@ function MoviesRatedRender({
 }) {
   const items = ratedMovies.map(
     ({ title, description, average, posterImage, date, id, genreIds }) => (
-      <GenresConsumer>
+      <GenresConsumer key={id}>
         {(genres) => {
           return (
             <FilmCard
@@ -40,7 +40,7 @@ function MoviesRatedRender({
 
   return (
     <ErrorBoundary>
-      <ul className="CardList">{items}</ul>;
+      <ul className="CardList">{items}</ul>
       <div className="Pagination">
         <Pagination
           current={page}

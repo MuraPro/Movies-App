@@ -75,6 +75,7 @@ FilmCard.propTypes = {
   date: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   average: PropTypes.string.isRequired,
+  rateMovie: PropTypes.func.isRequired,
 };
 
 FilmCard.defaultProps = {
