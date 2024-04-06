@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Rate } from 'antd';
 import PropTypes from 'prop-types';
 import FilmGeners from '../ui/Geners/FilmGenres';
-import imageNotFound from '../../assets/images/image-not-found-scaled-1150x647.jpg';
+import imageNotFound from '../../assets/images/image-not-found.png';
 import { getAverageVoteColor } from '../../utils/transform-data';
 import './MovieCard.css';
 import { useMovies } from '../../hooks/useMovies';

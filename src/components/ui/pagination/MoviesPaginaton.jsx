@@ -9,7 +9,7 @@ export const MoviesPagination = ({ page }) => {
     <div className='paginationArea'>
       <Pagination
         total={totalPages > 10000 ? 10000 : totalPages}
-        pageSize='10'
+        pageSize='20'
         showSizeChanger={false}
         onChange={onPageChange}
         hideOnSinglePage

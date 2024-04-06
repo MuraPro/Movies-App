@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
 import moviesService, {
   sendMovieRating,
   transformFilmInfo,
@@ -73,9 +72,8 @@ const MoviesProvider = ({ children }) => {
         // localStorage.setItem('Movies', JSON.stringify(movies));
         setLoading(false);
       } catch ({ message }) {
-        console.log(message);
         const errorMessage = generateError(message);
-        toast.error(errorMessage);
+        console.log(errorMessage);
         errorCatcher(error);
       }
     },
