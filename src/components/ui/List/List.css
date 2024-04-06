@@ -1,0 +1,14 @@
+.CardList {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  list-style: none;
+  padding: 0;
+}
+
+@media (max-width: 991.9px) {
+  .CardList {
+    align-items: center;
+    flex-direction: column;
+  }
+}

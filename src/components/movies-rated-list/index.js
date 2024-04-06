@@ -1,0 +1,1 @@
+export { MoviesRatedList } from './MoviesRatedList';

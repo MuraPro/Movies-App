@@ -1,0 +1,28 @@
+.pagination {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.paginationArea {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+@media (max-width: 400px) {
+  .paginationArea {
+    margin-top: 0px;
+  }
+
+  :where(.css-dev-only-do-not-override-11xg00t).ant-pagination
+    .ant-pagination-item {
+    min-width: 28px;
+  }
+
+  :where(.css-dev-only-do-not-override-11xg00t).ant-pagination
+    .ant-pagination-item {
+    margin: 0px;
+  }
+}

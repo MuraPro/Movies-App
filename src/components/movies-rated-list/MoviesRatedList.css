@@ -1,0 +1,14 @@
+.Missing {
+  font-size: 20px;
+  font-family: 'Inter';
+  text-align: center;
+}
+
+.Movie-card {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out; /* добавляем transition для плавного появления */
+}
+
+.Movie-card.fade-in {
+  opacity: 1;
+}
