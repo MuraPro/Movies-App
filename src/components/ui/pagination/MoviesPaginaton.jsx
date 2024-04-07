@@ -1,25 +1,33 @@
-import { useMovies } from '../../../hooks/useMovies';
 import { Pagination } from 'antd';
-import PropTypes from 'prop-types';
 import './MoviesPagination.css';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  getCurrentPage,
+  getQuery,
+  getTotalPages,
+  onPageChange,
+} from '../../../store/movies';
 
-export const MoviesPagination = ({ page }) => {
-  const { totalPages, onPageChange } = useMovies();
+export const MoviesPagination = () => {
+  const dispatch = useDispatch();
+  const query = useSelector(getQuery());
+  const currentPage = useSelector(getCurrentPage());
+  const totalPages = useSelector(getTotalPages());
+
+  const handleChange = (currentPage) => {
+    dispatch(onPageChange(query, currentPage)); // Передаем query и currentPage в action creator
+  };
   return (
     <div className='paginationArea'>
       <Pagination
         total={totalPages > 10000 ? 10000 : totalPages}
         pageSize='10'
         showSizeChanger={false}
-        onChange={onPageChange}
+        onChange={handleChange}
         hideOnSinglePage
-        current={page}
+        current={currentPage}
         defaultCurrent={1}
       />
     </div>
   );
-};
-
-MoviesPagination.propTypes = {
-  page: PropTypes.number,
 };

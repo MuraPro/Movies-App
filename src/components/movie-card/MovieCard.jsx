@@ -6,6 +6,8 @@ import imageNotFound from '../../assets/images/image-not-found-scaled-1150x647.j
 import { getAverageVoteColor } from '../../utils/transform-data';
 import './MovieCard.css';
 import { useMovies } from '../../hooks/useMovies';
+import { useDispatch } from 'react-redux';
+import { debouncedRatingFetching } from '../../store/movies';
 
 export function MovieCard({
   title,
@@ -19,12 +21,13 @@ export function MovieCard({
   rating,
   index,
 }) {
-  const { onRatingChange } = useMovies();
+  //   const { onRatingChange } = useMovies();
+  const dispatch = useDispatch();
   const [isRated, setIsRated] = useState(false); // Состояние для отслеживания факта оценки
 
   const handleChange = (rate) => {
     if (!isRated) {
-      onRatingChange(id, rate);
+      dispatch(debouncedRatingFetching(id, rate));
       setIsRated(true);
     }
   };

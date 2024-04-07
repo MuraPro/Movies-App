@@ -1,17 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './components/app';
+import { ToastContainer } from 'react-toastify';
+import MoviesProvider from './hooks/useMovies';
+import { Provider } from 'react-redux';
+import { createStore } from './store/createStore';
 import './index.css';
 
-import { ToastContainer } from 'react-toastify';
-
-import MoviesProvider from './hooks/useMovies';
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const store = createStore();
 
 root.render(
-  <MoviesProvider>
+  <Provider store={store}>
     <App />
     <ToastContainer />
-  </MoviesProvider>
+  </Provider>
 );

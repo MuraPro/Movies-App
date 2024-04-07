@@ -7,6 +7,7 @@ export const getAverageVoteColor = (voteAverage) => {
 };
 
 export function assignGenres(arr, genres) {
+  //   console.log(arr, genres);
   arr.forEach((movie) => {
     movie.genreIds.forEach((genreId, index) => {
       const foundGenre = genres.find((genre) => genre.id === genreId);

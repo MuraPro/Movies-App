@@ -70,7 +70,6 @@ const MoviesProvider = ({ children }) => {
         const movies = results.map((m) => transformFilmInfo(m));
         setMovies(movies);
         setTotalPages(total_results);
-        // localStorage.setItem('Movies', JSON.stringify(movies));
         setLoading(false);
       } catch ({ message }) {
         console.log(message);
@@ -125,13 +124,9 @@ const MoviesProvider = ({ children }) => {
     setLoading(false);
   }
 
-  const setPage = (page) => {
-    setCurrentPage(page);
-  };
-
   const onPageChange = (page) => {
     getMovies(query, page);
-    setPage(page);
+    setCurrentPage(page);
   };
 
   const onRatingChange = (id, rate) => {

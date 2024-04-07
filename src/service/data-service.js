@@ -19,7 +19,6 @@ const moviesService = {
       },
     };
     const { data } = await axios.request(options);
-    setSessionId(data.guest_session_id);
     return data;
   },
 
@@ -132,7 +131,7 @@ export function transformRatedFilmInfo(movie) {
 export const sessionId = async () => {
   try {
     const data = await moviesService.getGuestSessionId();
-    return data;
+    setSessionId(data.guest_session_id);
   } catch ({ message }) {
     const errorMessage = generateError(message);
     toast.error(errorMessage);
