@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import FilmGeners from '../ui/Geners/FilmGenres';
 import imageNotFound from '../../assets/images/image-not-found-scaled-1150x647.jpg';
 import { getAverageVoteColor } from '../../utils/transform-data';
-import './MovieCard.css';
-import { useMovies } from '../../hooks/useMovies';
 import { useDispatch } from 'react-redux';
-import { debouncedRatingFetching } from '../../store/movies';
+import { onRatedMovies } from '../../store/movies';
+import './MovieCard.css';
 
 export function MovieCard({
   title,
@@ -21,13 +20,12 @@ export function MovieCard({
   rating,
   index,
 }) {
-  //   const { onRatingChange } = useMovies();
   const dispatch = useDispatch();
-  const [isRated, setIsRated] = useState(false); // Состояние для отслеживания факта оценки
+  const [isRated, setIsRated] = useState(false);
 
   const handleChange = (rate) => {
     if (!isRated) {
-      dispatch(debouncedRatingFetching(id, rate));
+      dispatch(onRatedMovies(id, rate));
       setIsRated(true);
     }
   };

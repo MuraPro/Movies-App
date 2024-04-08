@@ -1,7 +1,10 @@
 import { createAction, createSlice } from '@reduxjs/toolkit';
 import { generateError } from '../utils/generateError';
 import { setSessionId } from '../service/localStorage.service';
-import moviesService, { transformFilmInfo } from '../service/data-service';
+import moviesService, {
+  sendMovieRating,
+  transformFilmInfo,
+} from '../service/data-service';
 import { debounce } from 'lodash';
 import { assignGenres, updateMoviesRating } from '../utils/transform-data';
 
@@ -14,6 +17,7 @@ const initialState = {
   currentPage: 1,
   ganres: null,
   query: '',
+  isRate: false,
 };
 
 const moviesSlice = createSlice({
@@ -24,7 +28,7 @@ const moviesSlice = createSlice({
       state.isLoading = true;
     },
     moviesReceived: (state, action) => {
-      state.entities = action.payload.updatedMoviesList;
+      state.entities = action.payload.moviesList;
       state.totalPages = action.payload.total_results;
       state.isLoading = false;
     },
@@ -47,6 +51,7 @@ const moviesSlice = createSlice({
     },
     ratingCreateReceived: (state, action) => {
       state.status = action.payload;
+      state.isRate = true;
     },
     setQuery: (state, action) => {
       state.query = action.payload;
@@ -101,85 +106,74 @@ export const getGanres = () => async (dispatch) => {
   }
 };
 
-export const getMovies =
-  (query = '', currentPage = 1) =>
-  async (dispatch, getState) => {
-    dispatch(moviesRequested());
-    const ratedMovies = JSON.parse(localStorage.getItem('RatedMovies')) || [];
+export const getMovies = (query, page) => async (dispatch, getState) => {
+  dispatch(moviesRequested());
+  const ratedMovies = JSON.parse(localStorage.getItem('RatedMovies')) || [];
 
-    try {
-      const { results, total_results } = await moviesService.getMoviesList(
-        query,
-        currentPage
-      );
-      const movies = results.map((m) => transformFilmInfo(m));
-      const moviesList = assignGenres(movies, getState().movies.ganres);
-      if (ratedMovies) {
-        const updatedMoviesList = updateMoviesRating(moviesList, ratedMovies);
-        dispatch(moviesReceived({ updatedMoviesList, total_results }));
-      } else {
-        dispatch(moviesReceived({ moviesList, total_results }));
-      }
-    } catch ({ message }) {
-      console.log(message);
-      const errorMessage = generateError(message);
-      dispatch(moviesRequestFailed(errorMessage));
-    }
-  };
-
-export const sendMovieRating = (movieId, rate) => async (dispatch) => {
-  dispatch(ratingCreateRequested());
   try {
-    const { data } = await moviesService.sendMovieRate(movieId, rate);
-    dispatch(ratingCreateReceived(data));
+    const { results, total_results } = await moviesService.getMoviesList(
+      query,
+      page
+    );
+    const movies = results.map((m) => transformFilmInfo(m));
+    const transformMovies = assignGenres(movies, getState().movies.ganres);
+    if (ratedMovies) {
+      const moviesList = updateMoviesRating(transformMovies, ratedMovies);
+      dispatch(moviesReceived({ moviesList, total_results }));
+    } else {
+      dispatch(moviesReceived({ transformMovies, total_results }));
+    }
   } catch ({ message }) {
     console.log(message);
     const errorMessage = generateError(message);
-    dispatch(ratingCreateFailed(errorMessage));
+    dispatch(moviesRequestFailed(errorMessage));
   }
 };
 
-export const debouncedQueryFetching = debounce(
-  (query, page) => (dispatch) => {
-    dispatch(setQuery(query));
-    getMovies(query, page);
-  },
-  300
-);
+const debouncedFetching = debounce((query, page, dispatch) => {
+  dispatch(setQuery(query));
+  dispatch(getMovies(query, page));
+}, 500);
 
-export const debouncedRatingFetching = debounce(
-  (id, rate) => (dispatch, getState) => {
-    sendMovieRating(id, rate);
-    const movies = getState().movies.entities;
-    const updateMovies = (movies) => {
-      return movies.map((movie) => {
-        if (movie.id === id) {
-          return { ...movie, rating: rate };
-        }
-        return movie;
-      });
-    };
-    dispatch(moviesUpdate(updateMovies));
+export const queryChange = (query, page) => (dispatch) => {
+  debouncedFetching(query, page, dispatch);
+};
 
-    const currentRatedMovies =
-      JSON.parse(localStorage.getItem('RatedMovies')) || [];
+export const debouncedRatingFetching = debounce((id, rate, dispatch) => {
+  sendMovieRating(id, rate);
+}, 500);
 
-    const existingMovie = currentRatedMovies.find((movie) => movie.id === id);
-    if (!existingMovie) {
-      const findMovie = movies.find((movie) => movie.id === id);
-      const transformFindMovie = { ...findMovie, rating: rate };
-      const updatedMovies = [...currentRatedMovies, transformFindMovie];
-      localStorage.setItem('RatedMovies', JSON.stringify(updatedMovies));
-    }
-  },
-  500
-);
+export const onRatedMovies = (id, rate) => (dispatch, getState) => {
+  debouncedRatingFetching(id, rate, dispatch);
+  const movies = getState().movies.entities;
 
+  const updateMovies = (movies) => {
+    return movies.map((movie) => {
+      if (movie.id === id) {
+        return { ...movie, rating: rate };
+      }
+      return movie;
+    });
+  };
+  dispatch(moviesUpdate(updateMovies(movies)));
+
+  const currentRatedMovies =
+    JSON.parse(localStorage.getItem('RatedMovies')) || [];
+
+  const existingMovie = currentRatedMovies.find((movie) => movie.id === id);
+  if (!existingMovie) {
+    const findMovie = movies.find((movie) => movie.id === id);
+    const transformFindMovie = { ...findMovie, rating: rate };
+    const updatedMovies = [...currentRatedMovies, transformFindMovie];
+    localStorage.setItem('RatedMovies', JSON.stringify(updatedMovies));
+  }
+};
 export const onPageChange = (query, page) => (dispatch) => {
   dispatch(getMovies(query, page));
   dispatch(changeCurrentPage(page));
 };
 
+export const getIsRate = () => (state) => state.movies.isRate;
 export const getMoviesList = () => (state) => state.movies.entities;
 export const getTotalPages = () => (state) => state.movies.totalPages;
 export const getGanresList = () => (state) => state.movies.ganres;

@@ -1,13 +1,11 @@
-import { useMovies } from '../../../hooks/useMovies';
-import { Skeleton } from 'antd';
-import { MovieCard } from '../../movie-card';
-import './List.css';
-import { useSelector } from 'react-redux';
-import { getCurrentPage, getMoviesLoadingStatus } from '../../../store/movies';
 import { useEffect, useState } from 'react';
+import { MovieCard } from '../../movie-card';
+import { getCurrentPage, getMoviesLoadingStatus } from '../../../store/movies';
+import { useSelector } from 'react-redux';
+import { Skeleton } from 'antd';
+import './List.css';
 
 export const List = ({ list, moviesToShow, value }) => {
-  //   const { loading, showSkeleton } = useMovies();
   const currentPage = useSelector(getCurrentPage());
   const [showSkeleton, setShowSkeleton] = useState(true);
   const loading = useSelector(getMoviesLoadingStatus());

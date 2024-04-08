@@ -1,50 +1,40 @@
-import { useEffect, useState } from 'react';
-import { useMovies } from '../../hooks/useMovies';
+import { useEffect, useMemo, useState } from 'react';
 import { SearchInput } from '../ui/input';
 import { List } from '../ui/List';
-import { assignGenres } from '../../utils/transform-data';
+import { getRatedMovies, getRatedMoviesList } from '../../store/rated-movies';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCurrentPage, getIsRate, getQuery } from '../../store/movies';
+import './MoviesRatedList.css';
 
 export const MoviesRatedList = () => {
-  const {
-    ratedMoviesList,
-    getRatedMovies,
-    currentPage,
-    ganres,
-    error,
-    setError,
-  } = useMovies();
-  const [ratedMovies, setRatedMovies] = useState(null);
+  const dispatch = useDispatch();
+  const [ratedMoviesList, setRatedMoviesList] = useState([]);
+  const query = useSelector(getQuery());
+  const currentPage = useSelector(getCurrentPage());
+  const ratedMovies = useSelector(getRatedMoviesList());
+  const isRate = useSelector(getIsRate());
 
   useEffect(() => {
     if (!ratedMovies) {
       const storedMovies = localStorage.getItem('RatedMovies');
-      if (storedMovies) {
-        setRatedMovies(JSON.parse(storedMovies));
+      if (!storedMovies) {
+        dispatch(getRatedMovies(query, currentPage));
       } else {
-        getRatedMovies(currentPage);
+        setRatedMoviesList(JSON.parse(storedMovies));
       }
     }
-    // eslint-disable-next-line
-  }, [currentPage, ratedMovies]);
+  }, [isRate, ratedMovies, dispatch, query, currentPage]);
 
-  useEffect(() => {
-    if (error !== null) {
-      console.log(error);
-      setError(null);
-    }
-  }, [error, setError]);
-
-  const movies = assignGenres(ratedMovies || ratedMoviesList, ganres) || [];
+  const memoizedMovies =
+    useMemo(() => ratedMoviesList, [ratedMoviesList]) || [];
 
   return (
     <>
-      {movies.length > 0 ? (
-        <>
-          <SearchInput />
-          <List list={movies} moviesToShow='100' />
-        </>
+      <SearchInput />
+      {memoizedMovies.length > 0 ? (
+        <List list={memoizedMovies} moviesToShow='100' />
       ) : (
-        <h2 className='Missing'>Вы ещё не оценили ни одного фильма...</h2>
+        <h2 className='Missing'>Вы еще не оценили ни одного фильма...</h2>
       )}
     </>
   );

@@ -77,7 +77,6 @@ const moviesService = {
 
   async sendMovieRate(movieId, rate) {
     const sessionId = getSessionId();
-
     const options = {
       method: 'POST',
       url: `${BASE_URL}/movie/${movieId}/rating`,
@@ -91,7 +90,7 @@ const moviesService = {
         value: rate,
       }),
     };
-    const data = await axios.request(options);
+    const { data } = await axios.request(options);
     return data;
   },
 };
@@ -140,7 +139,7 @@ export const sessionId = async () => {
 
 export const sendMovieRating = async (movieId, rate) => {
   try {
-    const { data } = await moviesService.sendMovieRate(movieId, rate);
+    const data = await moviesService.sendMovieRate(movieId, rate);
     return data;
   } catch ({ message }) {
     console.log(message);

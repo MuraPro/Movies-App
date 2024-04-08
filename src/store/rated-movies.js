@@ -15,15 +15,15 @@ const ratedMoviesSlice = createSlice({
   name: 'ratedMovies',
   initialState,
   reducers: {
-    moviesRequested: (state) => {
+    ratedMoviesRequested: (state) => {
       state.isLoading = true;
     },
-    moviesReceived: (state, action) => {
+    ratedMoviesReceived: (state, action) => {
       state.entities = action.payload.movies;
-      state.totalPages = action.payload.totalPages;
+      state.totalPages = action.payload.total_results;
       state.isLoading = false;
     },
-    moviesRequestFailed: (state, action) => {
+    ratedMoviesRequestFailed: (state, action) => {
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -34,12 +34,12 @@ const { reducer: ratedMoviesReducer, actions } = ratedMoviesSlice;
 const { ratedMoviesRequested, ratedMoviesReceived, ratedMoviesRequestFailed } =
   actions;
 
-export const getRatedMovies = (query, currentPage) => async (dispatch) => {
+export const getRatedMovies = (query, page) => async (dispatch) => {
   dispatch(ratedMoviesRequested());
   try {
     const { results, total_results } = await moviesService.getRatedMoviesList(
       query,
-      currentPage
+      page
     );
     const movies = results.map((m) => transformRatedFilmInfo);
     dispatch(ratedMoviesReceived({ movies, total_results }));
@@ -57,7 +57,6 @@ export const getRatedMoviesById = (movieId) => (state) => {
     return state.ratedMovies.entities.find((m) => m._id === movieId);
   }
 };
-
 export const getRatedMoviesLoadingStatus = () => (state) =>
   state.ratedMovies.isLoading;
 

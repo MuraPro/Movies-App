@@ -1,29 +1,22 @@
-import { Input } from 'antd';
-import { useMovies } from '../../../hooks/useMovies';
-import './input.css';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  debouncedQueryFetching,
-  getCurrentPage,
-  getQuery,
-  onPageChange,
-} from '../../../store/movies';
 import { useState } from 'react';
+import { Input } from 'antd';
+import { useDispatch } from 'react-redux';
+import { queryChange } from '../../../store/movies';
+import './input.css';
 
-export const SearchInput = ({ value, setValue }) => {
-  const currentPage = useSelector(getCurrentPage());
-  const query = useSelector(getQuery());
+export const SearchInput = () => {
   const dispatch = useDispatch();
+  const [inputValue, setInputValue] = useState('');
 
   const onQueryChange = (e) => {
-    dispatch(debouncedQueryFetching(e.target.value, currentPage));
-    setValue(e.target.value);
+    setInputValue(e.target.value);
+    dispatch(queryChange(e.target.value, 1));
   };
 
   return (
     <Input
       placeholder='Type to search...'
-      value={value}
+      value={inputValue}
       className='SearchFilmInput'
       size='large'
       onChange={onQueryChange}

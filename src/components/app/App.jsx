@@ -16,6 +16,7 @@ import {
   getMovies,
   getGanresList,
 } from '../../store/movies';
+import { getRatedMovies } from '../../store/rated-movies';
 
 export function App() {
   const dispatch = useDispatch();
@@ -28,15 +29,17 @@ export function App() {
       dispatch(sessionId());
     }
 
-    // Проверяем, есть ли уже ganres в сторе
     if (!ganres) {
-      // Если ganres еще не загружены, вызываем действие getGanres
       dispatch(getGanres());
     }
 
-    // Вызываем getMovies после того, как ganres загружены
     dispatch(getMovies(query, currentPage));
-  }, []);
+
+    const storedMovies = localStorage.getItem('RatedMovies') || [];
+    if (!storedMovies) {
+      dispatch(getRatedMovies(query, currentPage));
+    }
+  }, [currentPage, query, ganres, dispatch]);
 
   const items = [
     {
@@ -47,7 +50,7 @@ export function App() {
     {
       label: 'Rated Movies',
       key: '2',
-      children: <h2>Hello</h2>,
+      children: <MoviesRatedList />,
     },
   ];
 
