@@ -1,8 +1,5 @@
-import { toast } from 'react-toastify';
 import axios from 'axios';
-import moment from 'moment';
-import { getSessionId, setSessionId } from './localStorage.service';
-import { generateError } from '../utils/generateError';
+import { getSessionId } from './localStorage.service';
 
 const BEARER_TOKEN =
   'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI4Njg2NTUxYjA5NWI1NjYxMDE2OTRlYWZlZmViZDc2NCIsInN1YiI6IjYzOTU4YTE3OGE4OGIyMDA4YTJmZjgxOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.IHBIX5wfJoOvk-lvzZaMqRuEscuFEaYy5jl7nE08s6I';
@@ -24,18 +21,16 @@ const moviesService = {
 
   getRatedMoviesList: async (page) => {
     const sessionId = getSessionId();
+    const UrlR = `${BASE_URL}/guest_session/${sessionId}/rated/movies?page=${page}`;
     const options = {
       method: 'GET',
-      params: { page },
+      url: UrlR,
       headers: {
         accept: 'application/json',
         Authorization: BEARER_TOKEN,
       },
     };
-    const data = await axios.request(
-      `${BASE_URL}/guest_session/${sessionId}/rated/movies`,
-      options
-    );
+    const { data } = await axios.request(options);
     return data;
   },
 
@@ -93,59 +88,6 @@ const moviesService = {
     const { data } = await axios.request(options);
     return data;
   },
-};
-
-function transformDate(str) {
-  return moment(new Date(str)).format(`MMMM D, YYYY`);
-}
-export function transformFilmInfo(movie) {
-  return {
-    title: movie.title,
-    description: movie.overview,
-    average: movie.vote_average.toFixed(1),
-    date: transformDate(movie.release_date),
-    id: movie.id,
-    posterImage: movie.poster_path
-      ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
-      : null,
-    genreIds: movie.genre_ids,
-    rating: movie.rating,
-  };
-}
-export function transformRatedFilmInfo(movie) {
-  return {
-    title: movie.title,
-    description: movie.overview,
-    average: movie.vote_average.toFixed(1),
-    date: transformDate(movie.release_date),
-    id: movie.id,
-    posterImage: movie.poster_path
-      ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
-      : null,
-    genreIds: movie.genre_ids,
-    rating: movie.rating,
-  };
-}
-
-export const sessionId = async () => {
-  try {
-    const data = await moviesService.getGuestSessionId();
-    setSessionId(data.guest_session_id);
-  } catch ({ message }) {
-    const errorMessage = generateError(message);
-    toast.error(errorMessage);
-  }
-};
-
-export const sendMovieRating = async (movieId, rate) => {
-  try {
-    const data = await moviesService.sendMovieRate(movieId, rate);
-    return data;
-  } catch ({ message }) {
-    console.log(message);
-    const errorMessage = generateError(message);
-    toast.info(errorMessage);
-  }
 };
 
 export default moviesService;

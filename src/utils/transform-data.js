@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const getAverageVoteColor = (voteAverage) => {
   if (voteAverage >= 0 && voteAverage < 3) return '#E90000';
   if (voteAverage >= 3 && voteAverage < 5) return '#E97E00';
@@ -7,7 +9,6 @@ export const getAverageVoteColor = (voteAverage) => {
 };
 
 export function assignGenres(arr, genres) {
-  //   console.log(arr, genres);
   arr.forEach((movie) => {
     movie.genreIds.forEach((genreId, index) => {
       const foundGenre = genres.find((genre) => genre.id === genreId);
@@ -30,4 +31,36 @@ export function updateMoviesRating(moviesList, ratedMovies) {
   });
 
   return moviesList;
+}
+
+function transformDate(str) {
+  return moment(new Date(str)).format(`MMMM D, YYYY`);
+}
+export function transformFilmInfo(movie) {
+  return {
+    title: movie.title,
+    description: movie.overview,
+    average: movie.vote_average.toFixed(1),
+    date: transformDate(movie.release_date),
+    id: movie.id,
+    posterImage: movie.poster_path
+      ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
+      : null,
+    genreIds: movie.genre_ids,
+    rating: movie.rating,
+  };
+}
+export function transformRatedFilmInfo(movie) {
+  return {
+    title: movie.title,
+    description: movie.overview,
+    average: movie.vote_average.toFixed(1),
+    date: transformDate(movie.release_date),
+    id: movie.id,
+    posterImage: movie.poster_path
+      ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
+      : null,
+    genreIds: movie.genre_ids,
+    rating: movie.rating,
+  };
 }

@@ -16,7 +16,6 @@ import {
   getMovies,
   getGanresList,
 } from '../../store/movies';
-import { getRatedMovies } from '../../store/rated-movies';
 
 export function App() {
   const dispatch = useDispatch();
@@ -34,11 +33,6 @@ export function App() {
     }
 
     dispatch(getMovies(query, currentPage));
-
-    const storedMovies = localStorage.getItem('RatedMovies') || [];
-    if (!storedMovies) {
-      dispatch(getRatedMovies(query, currentPage));
-    }
   }, [currentPage, query, ganres, dispatch]);
 
   const items = [

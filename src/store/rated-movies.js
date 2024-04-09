@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { generateError } from '../utils/generateError';
-import moviesService, { transformRatedFilmInfo } from '../service/data-service';
+import moviesService from '../service/data-service';
+import { transformRatedFilmInfo } from '../utils/transform-data';
 
 const initialState = {
   entities: null,
@@ -34,14 +35,13 @@ const { reducer: ratedMoviesReducer, actions } = ratedMoviesSlice;
 const { ratedMoviesRequested, ratedMoviesReceived, ratedMoviesRequestFailed } =
   actions;
 
-export const getRatedMovies = (query, page) => async (dispatch) => {
+export const getRatedMovies = (page) => async (dispatch) => {
   dispatch(ratedMoviesRequested());
   try {
     const { results, total_results } = await moviesService.getRatedMoviesList(
-      query,
       page
     );
-    const movies = results.map((m) => transformRatedFilmInfo);
+    const movies = results.map((m) => transformRatedFilmInfo(m));
     dispatch(ratedMoviesReceived({ movies, total_results }));
   } catch ({ message }) {
     console.log(message);
@@ -51,12 +51,6 @@ export const getRatedMovies = (query, page) => async (dispatch) => {
 };
 
 export const getRatedMoviesList = () => (state) => state.ratedMovies.entities;
-
-export const getRatedMoviesById = (movieId) => (state) => {
-  if (state.ratedMovies.entities) {
-    return state.ratedMovies.entities.find((m) => m._id === movieId);
-  }
-};
 export const getRatedMoviesLoadingStatus = () => (state) =>
   state.ratedMovies.isLoading;
 

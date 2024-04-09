@@ -15,8 +15,9 @@ export const MoviesPagination = () => {
   const totalPages = useSelector(getTotalPages());
 
   const handleChange = (currentPage) => {
-    dispatch(onPageChange(query, currentPage)); // Передаем query и currentPage в action creator
+    dispatch(onPageChange(query, currentPage));
   };
+
   return (
     <div className='paginationArea'>
       <Pagination

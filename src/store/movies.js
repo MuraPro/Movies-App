@@ -1,17 +1,19 @@
 import { createAction, createSlice } from '@reduxjs/toolkit';
 import { generateError } from '../utils/generateError';
 import { setSessionId } from '../service/localStorage.service';
-import moviesService, {
-  sendMovieRating,
-  transformFilmInfo,
-} from '../service/data-service';
+import moviesService from '../service/data-service';
 import { debounce } from 'lodash';
-import { assignGenres, updateMoviesRating } from '../utils/transform-data';
+import {
+  assignGenres,
+  updateMoviesRating,
+  transformFilmInfo,
+} from '../utils/transform-data';
+import { toast } from 'react-toastify';
 
 const initialState = {
   entities: null,
   isLoading: true,
-  status: null,
+  status: true,
   error: null,
   totalPages: null,
   currentPage: 1,
@@ -49,8 +51,7 @@ const moviesSlice = createSlice({
     ganresRequestFailed: (state, action) => {
       state.error = action.payload;
     },
-    ratingCreateReceived: (state, action) => {
-      state.status = action.payload;
+    ratingCreateReceived: (state) => {
       state.isRate = true;
     },
     setQuery: (state, action) => {
@@ -82,6 +83,15 @@ const sessionCreateRequested = createAction('movies/sessionCreateRequested');
 const sessionCreateReceived = createAction('movies/sessionCreateReceived');
 const sessionCreateFailed = createAction('movies/sessionCreateFailed');
 
+const debouncedFetching = debounce((query, page, dispatch) => {
+  dispatch(setQuery(query));
+  dispatch(getMovies(query, page));
+}, 500);
+
+export const debouncedRatingFetching = debounce((id, rate, dispatch) => {
+  dispatch(sendMovieRating(id, rate));
+}, 500);
+
 export const sessionId = () => async (dispatch) => {
   dispatch(sessionCreateRequested());
   try {
@@ -89,6 +99,7 @@ export const sessionId = () => async (dispatch) => {
     setSessionId(guest_session_id);
     dispatch(sessionCreateReceived());
   } catch ({ message }) {
+    console.log(message);
     const errorMessage = generateError(message);
     dispatch(sessionCreateFailed(errorMessage));
   }
@@ -130,18 +141,23 @@ export const getMovies = (query, page) => async (dispatch, getState) => {
   }
 };
 
-const debouncedFetching = debounce((query, page, dispatch) => {
-  dispatch(setQuery(query));
-  dispatch(getMovies(query, page));
-}, 500);
-
 export const queryChange = (query, page) => (dispatch) => {
   debouncedFetching(query, page, dispatch);
 };
 
-export const debouncedRatingFetching = debounce((id, rate, dispatch) => {
-  sendMovieRating(id, rate);
-}, 500);
+const sendMovieRating = (movieId, rate) => async (dispatch) => {
+  dispatch(ratingCreateRequested());
+  try {
+    const data = await moviesService.sendMovieRate(movieId, rate);
+    dispatch(ratingCreateReceived());
+    return data;
+  } catch ({ message }) {
+    console.log(message);
+    const errorMessage = generateError(message);
+    toast.info(errorMessage);
+    dispatch(ratingCreateFailed());
+  }
+};
 
 export const onRatedMovies = (id, rate) => (dispatch, getState) => {
   debouncedRatingFetching(id, rate, dispatch);
@@ -175,17 +191,15 @@ export const onPageChange = (query, page) => (dispatch) => {
 
 export const getIsRate = () => (state) => state.movies.isRate;
 export const getMoviesList = () => (state) => state.movies.entities;
+export const getMoviesLoadingStatus = () => (state) => state.movies.isLoading;
 export const getTotalPages = () => (state) => state.movies.totalPages;
 export const getGanresList = () => (state) => state.movies.ganres;
 export const getCurrentPage = () => (state) => state.movies.currentPage;
 export const getQuery = () => (state) => state.movies.query;
-
 export const getMoviesById = (movieId) => (state) => {
   if (state.movies.entities) {
     return state.movies.entities.find((m) => m._id === movieId);
   }
 };
-
-export const getMoviesLoadingStatus = () => (state) => state.movies.isLoading;
 
 export default moviesReducer;

@@ -8,7 +8,7 @@ import './MoviesList.css';
 
 export const MoviesList = () => {
   const movies = useSelector(getMoviesList());
-  const memoizedMovies = useMemo(() => movies, [movies]);
+  const memoizedMovies = useMemo(() => movies, [movies]) || [];
 
   return (
     <>

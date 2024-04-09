@@ -18,6 +18,7 @@ export const List = ({ list, moviesToShow, value }) => {
 
     return () => clearTimeout(timer);
   }, [value, currentPage]);
+
   return (
     <ul className='CardList'>
       {loading || showSkeleton
