@@ -69,7 +69,6 @@ const MoviesProvider = ({ children }) => {
         const movies = results.map((m) => transformFilmInfo(m));
         setMovies(movies);
         setTotalPages(total_results);
-        // localStorage.setItem('Movies', JSON.stringify(movies));
         setLoading(false);
       } catch ({ message }) {
         const errorMessage = generateError(message);
@@ -117,6 +116,13 @@ const MoviesProvider = ({ children }) => {
 
     return () => clearTimeout(timer);
   }, [value, currentPage]);
+
+  useEffect(() => {
+    if (error !== null) {
+      console.log(error);
+      setError(null);
+    }
+  }, [error, setError]);
 
   function errorCatcher(error) {
     setError(error);

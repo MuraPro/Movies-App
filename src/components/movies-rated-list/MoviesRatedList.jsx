@@ -5,34 +5,15 @@ import { List } from '../ui/List';
 import { assignGenres } from '../../utils/transform-data';
 
 export const MoviesRatedList = () => {
-  const {
-    ratedMoviesList,
-    getRatedMovies,
-    currentPage,
-    ganres,
-    error,
-    setError,
-  } = useMovies();
+  const { ratedMoviesList, currentPage, ganres } = useMovies();
   const [ratedMovies, setRatedMovies] = useState(null);
+  const storedMovies = localStorage.getItem('RatedMovies');
 
   useEffect(() => {
-    if (!ratedMovies) {
-      const storedMovies = localStorage.getItem('RatedMovies');
-      if (storedMovies) {
-        setRatedMovies(JSON.parse(storedMovies));
-      } else {
-        getRatedMovies(currentPage);
-      }
+    if (storedMovies) {
+      setRatedMovies(JSON.parse(storedMovies));
     }
-    // eslint-disable-next-line
-  }, [currentPage, ratedMovies]);
-
-  useEffect(() => {
-    if (error !== null) {
-      console.log(error);
-      setError(null);
-    }
-  }, [error, setError]);
+  }, [currentPage, storedMovies]);
 
   const movies = assignGenres(ratedMovies || ratedMoviesList, ganres) || [];
 
