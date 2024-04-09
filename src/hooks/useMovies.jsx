@@ -67,7 +67,8 @@ const MoviesProvider = ({ children }) => {
           currentPage
         );
         const movies = results.map((m) => transformFilmInfo(m));
-        setMovies(movies);
+        const transforMovies = assignGenres(movies, ganres) || [];
+        setMovies(transforMovies);
         setTotalPages(total_results);
         setLoading(false);
       } catch ({ message }) {
@@ -76,7 +77,7 @@ const MoviesProvider = ({ children }) => {
         errorCatcher(error);
       }
     },
-    [error]
+    [error, ganres]
   );
 
   const getRatedMovies = async (page) => {
@@ -106,7 +107,7 @@ const MoviesProvider = ({ children }) => {
 
   useEffect(() => {
     getGanres();
-  }, [getGanres]);
+  }, [getGanres, ganres]);
 
   useEffect(() => {
     setShowSkeleton(true);
