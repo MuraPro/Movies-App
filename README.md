@@ -1,34 +1,42 @@
-# Визульная часть проекта Movies-App:
-https://movies-app-cra.vercel.app/
+# Movies-App
+
+## Description  
+A frontend pet project designed to explore movie data management and user interaction.  
+The application is built with **React** and **Hooks**, featuring pagination of movie data, data transformation for visual display, and a user rating functionality which sends results to the server.
+
+## Tech Stack  
+- React (functional components, Hooks)  
+- JavaScript (ES6+)  
+- REST API integration (movies data source)  
+- Paginated data loading (infinite scroll or page control)  
+- Data transformation for UI visualization (e.g., mapping API responses to UI models)  
+- User rating system with backend communication  
+- CSS/SCSS for styling, responsive layout  
+- Optionally: Redux / Context (if used)  
+
+## Architecture & State Management  
+- **Single-page architecture (SPA)** using React.  
+- State management: built around React Hooks (useState, useEffect, custom Hooks) for handling UI state and data fetching.  
+- Data fetching layer handles paginated API calls, transforms raw API response into UI-friendly format (e.g., extract fields, compute derived data).  
+- Rating submissions: UI triggers POST/PUT request to server endpoint when user rates a movie.  
+- UI layer renders list/grid of movie cards; each card clickable for rating.
+
+## Features  
+- Paginated loading of movie data (i.e., “load more” or infinite scroll)  
+- Data transformation pipeline to prepare and display movie info (title, poster, rating, etc.)  
+- Visual UI elements: movie cards, dynamic color/styling, responsive design  
+- User rating feature: users can rate a movie; the rating is sent to server and UI updates accordingly  
+- Real-time feedback in UI (score/rating update)  
+- Optional logs or error handling for API failures  
+
+## Setup & Installation  
+```bash
+git clone https://github.com/MuraPro/Movies-App.git
+cd Movies-App
+npm install
+npm run dev
 
 
-Getting Started with Create React App
+# Live demo: https://movies-app-cra.vercel.app/
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
