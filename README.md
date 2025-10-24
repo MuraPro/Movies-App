@@ -1,4 +1,5 @@
 # Movies-App
+# Live demo: https://movies-app-cra.vercel.app/
 
 ## Description  
 A frontend pet project designed to explore movie data management and user interaction.  
@@ -36,7 +37,5 @@ cd Movies-App
 npm install
 npm run dev
 
-
-# Live demo: https://movies-app-cra.vercel.app/
 
 
