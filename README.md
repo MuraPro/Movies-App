@@ -29,7 +29,7 @@ The application is built with **React** and **Hooks**, featuring pagination of m
 - Real-time feedback in UI (score/rating update)  
 - Optional logs or error handling for API failures  
 
-# Live demo: https://movies-app-cra.vercel.app/
+Live demo: [https://movies-app-cra.vercel.app/](https://movies-app-cra.vercel.app/)  
 
 ## Setup & Installation  
 ```bash
