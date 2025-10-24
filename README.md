@@ -1,5 +1,4 @@
 # Movies-App
-# Live demo: https://movies-app-cra.vercel.app/
 
 ## Description  
 A frontend pet project designed to explore movie data management and user interaction.  
@@ -29,6 +28,8 @@ The application is built with **React** and **Hooks**, featuring pagination of m
 - User rating feature: users can rate a movie; the rating is sent to server and UI updates accordingly  
 - Real-time feedback in UI (score/rating update)  
 - Optional logs or error handling for API failures  
+
+# Live demo: https://movies-app-cra.vercel.app/
 
 ## Setup & Installation  
 ```bash
